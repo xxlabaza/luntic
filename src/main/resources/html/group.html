@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Luntic</title>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <div class="container" data-rmd="hr-center ul-star">
+    <header>
+      <span>
+        <a href="/">Luntic</a>
+      </span>
+
+      <nav>
+        <a href="/about">API</a>
+        <a href="https://github.com/xxlabaza/luntic">Code</a>
+      </nav>
+    </header>
+
+    <section>
+      <h1 id="service-group-name"></h1>
+      <p>
+        List of registered instances in group:
+      </p>
+
+      <div id="instances-here" class="language-elixir highlighter-rouge">
+      </div>
+
+    </section>
+  </div>
+
+  <footer>
+    Copyright 2017 Artem Labazin /
+    <a href="https://github.com/xxlabaza">GitHub</a>
+  </footer>
+
+  <script>
+    function query (name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function cookie (cname) {
+      var name = cname + "=",
+          decodedCookie = decodeURIComponent(document.cookie),
+          ca = decodedCookie.split(';');
+
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    function getGroupInstances (pathPrefix, groupName) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open('GET', '/api' + pathPrefix + '/' + groupName, false);
+      try {
+        xhttp.send();
+      } catch (ex) {
+        return null;
+      }
+
+      if (xhttp.status != 200) {
+        return null;
+      }
+
+      var json = JSON.parse(xhttp.responseText)
+      return json.length > 0
+             ? JSON.stringify(json, null, 4)
+             : '';
+    }
+
+    function colorize (text) {
+      var rules = [
+        {
+          from: /("[^"]+":)/g,
+          to: '<span class="mh">$1</span>'
+        }, {
+          from: /([{}\[\]])/g,
+          to: '<span class="p">$1</span>'
+        }, {
+          from: /([:,])/g,
+          to: '<span class="o">$1</span>'
+        }
+      ];
+
+      for (var i in rules) {
+        var it = rules[i];
+        text = text.replace(it.from, it.to);
+      }
+      return '<pre class="highlight"><code>' + text + '</code></pre>';
+    }
+
+
+
+    var pathPrefix = cookie("pathPrefix"),
+        groupName = query("name"),
+        noData = '<blockquote><p>There is no <code class="highlighter-rouge">instances</code> for ' + groupName + ' on discovery service</p></blockquote>',
+        serviceDown = '<blockquote><p>Discovery service is not <code class="highlighter-rouge">AVAILABLE</code></p></blockquote>';
+
+    document.getElementById('service-group-name').innerText = groupName;
+
+    function loop () {
+      var text = getGroupInstances(pathPrefix, groupName),
+          html = noData;
+
+      if (text === null) {
+        html = serviceDown;
+      } else if (text !== '') {
+        html = colorize(text);
+      }
+
+      document.getElementById('instances-here').innerHTML = html;
+    }
+
+    loop();
+    setInterval(loop, 3000);
+  </script>
+</body>
+</html>

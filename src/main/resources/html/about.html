@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Luntic</title>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <div class="container" data-rmd="hr-center ul-star">
+    <header>
+      <span>
+        <a href="/">Luntic</a>
+      </span>
+
+      <nav>
+        <a href="/about">API</a>
+        <a href="https://github.com/xxlabaza/luntic">Code</a>
+      </nav>
+    </header>
+
+    <section>
+      <article>
+        <section>
+
+          <h1>Rest API</h1>
+          <p>
+            This page describes service's REST API.
+          </p>
+
+          <ul>
+            <li>
+              <a href="#create">Registering new service</a>
+              <ul>
+                <li>
+                  <a href="#create-request">Request</a> |
+                  <a href="#create-response">Response</a> |
+                  <a href="#create-error">Error</a> |
+                  <a href="#create-examples">Examples</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#get">Retrieve a service(s)</a>
+              <ul>
+                <li>
+                  <a href="#get-request">Request</a> |
+                  <a href="#get-response">Response</a> |
+                  <a href="#get-error">Error</a> |
+                  <a href="#get-examples">Examples</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#put">Update service</a>
+              <ul>
+                <li>
+                  <a href="#put-request">Request</a> |
+                  <a href="#put-response">Response</a> |
+                  <a href="#put-error">Error</a> |
+                  <a href="#put-examples">Examples</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#delete">Removes a service</a>
+              <ul>
+                <li>
+                  <a href="#delete-request">Request</a> |
+                  <a href="#delete-response">Response</a> |
+                  <a href="#delete-error">Error</a> |
+                  <a href="#delete-examples">Examples</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <hr/>
+
+          <h2 id="create">Registering new service</h2>
+          <p>
+            Creates new record.
+          </p>
+
+          <h3 id="create-request">Request</h3>
+          <p>
+            <strong>POST</strong> [/pathPrefix]/{group}
+          </p>
+          <ul>
+            <li>
+              <strong>pathPrefix</strong> - common path prefix, which was set (default value - /) at the start of Luntic program;
+            </li>
+            <li>
+              <strong>group</strong> - name of the registering application group.
+            </li>
+          </ul>
+
+          <h3 id="create-response">Response</h3>
+          <p>
+            As a result of the request we get a response:
+          </p>
+
+          <ul>
+            <li>
+              <code class="highlighter-rouge">Code</code>: 201
+            </li>
+            <li>
+              <code class="highlighter-rouge">Headers</code>: Location: [/pathPrefix]/{group}/{instanceId}
+            </li>
+            <li>
+              <code class="highlighter-rouge">Content type</code>: application/json
+            </li>
+            <li>
+              <code class="highlighter-rouge">JSON fields:</code>
+              <table>
+                 <thead>
+                  <tr>
+                    <td><strong>Field</strong>&nbsp;&nbsp;&nbsp;</td>
+                    <td><strong>Optional</strong>&nbsp;&nbsp;&nbsp;</td>
+                    <td><strong>Description</strong></td>
+                  </tr>
+                 </thead>
+                <tr>
+                  <td><code class="highlighter-rouge">id</code></td>
+                  <td>no</td>
+                  <td>generated record id</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">group</code></td>
+                  <td>no</td>
+                  <td>the group name you set</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">created</code></td>
+                  <td>no</td>
+                  <td>the time you registered</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">modified</code></td>
+                  <td>no</td>
+                  <td>the time you last accessed the record</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">meta</code></td>
+                  <td>yes</td>
+                  <td>if you send JSON in request, we get it back in that field</td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+
+          <h3 id="create-error">Error response</h3>
+          <ul>
+            <li>
+              <strong>400</strong> - in case of incorrect group set (absent or contains <code class="highlighter-rouge">/</code> sign)
+            </li>
+          </ul>
+
+          <h3 id="create-examples">Examples</h3>
+          <p>
+            Create simple record:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                $> http -v POST :8080/popa
+
+                POST /popa HTTP/1.1
+                Accept: */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Content-Length: 0
+                Host: localhost:8080
+
+
+                HTTP/1.1 201 Created
+                Content-Length: 124
+                Content-Type: application/json
+                Location: /popa/597298af0937867200000001
+
+                {
+                    "created": "2017-07-22T03:13:35+03:00",
+                    "group": "popa",
+                    "id": "597298af0937867200000001",
+                    "modified": "2017-07-22T03:13:35+03:00"
+                }
+              </code>
+            </pre>
+          </div>
+
+          <p>
+            Create record with attached metadata:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                $> http -v POST :8080/popa one=1 two=2
+
+                POST /popa HTTP/1.1
+                Accept: application/json, */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Content-Length: 24
+                Content-Type: application/json
+                Host: localhost:8080
+
+                {
+                    "one": "1",
+                    "two": "2"
+                }
+
+
+                HTTP/1.1 201 Created
+                Content-Length: 154
+                Content-Type: application/json
+                Location: /popa/5972a20d5b31ed7400000001
+
+                {
+                    "created": "2017-07-22T03:53:33+03:00",
+                    "group": "popa",
+                    "id": "5972a20d5b31ed7400000001",
+                    "meta": {
+                        "one": "1",
+                        "two": "2"
+                    },
+                    "modified": "2017-07-22T03:53:33+03:00"
+                }
+              </code>
+            </pre>
+          </div>
+
+          <h2 id="get">Retrieve a service(s)</h2>
+          <p>
+            Returns all or specific records on the server.
+          </p>
+
+          <h3 id="get-request">Request</h3>
+          <p>
+            Get all groups and records:
+          </p>
+          <p>
+            <strong>GET</strong> [/pathPrefix]/
+          </p>
+
+          <p>
+            Get all group's records:
+          </p>
+          <p>
+            <strong>GET</strong> [/pathPrefix]/{group}
+          </p>
+
+          <p>
+            Get only specific record:
+          </p>
+          <p>
+            <strong>GET</strong> [/pathPrefix]/{group}/{instanceId}
+          </p>
+
+          <ul>
+            <li>
+              <strong>pathPrefix</strong> - common path prefix, which was set (default value - /) at the start of Luntic program;
+            </li>
+            <li>
+              <strong>group</strong> - name of the registering application group;
+            </li>
+            <li>
+              <strong>instanceId</strong> - service instance id.
+            </li>
+          </ul>
+
+          <h3 id="get-response">Response</h3>
+          <p>
+            As a result of the request we get a response:
+          </p>
+
+          <ul>
+            <li>
+              <code class="highlighter-rouge">Code</code>: 200
+            </li>
+            <li>
+              <code class="highlighter-rouge">Content type</code>: application/json
+            </li>
+            <li>
+              <code class="highlighter-rouge">JSON fields:</code>
+              <table>
+                 <thead>
+                  <tr>
+                    <td><strong>Field</strong>&nbsp;&nbsp;&nbsp;</td>
+                    <td><strong>Optional</strong>&nbsp;&nbsp;&nbsp;</td>
+                    <td><strong>Description</strong></td>
+                  </tr>
+                 </thead>
+                <tr>
+                  <td><code class="highlighter-rouge">id</code></td>
+                  <td>no</td>
+                  <td>generated record id</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">group</code></td>
+                  <td>no</td>
+                  <td>the group name you set</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">created</code></td>
+                  <td>no</td>
+                  <td>the time you registered</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">modified</code></td>
+                  <td>no</td>
+                  <td>the time you last accessed the record</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">meta</code></td>
+                  <td>yes</td>
+                  <td>if you send JSON in request, we get it back in that field</td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+
+          <h3 id="get-error">Error response</h3>
+          <ul>
+            <li>
+              <strong>404</strong> - in case of nonexistent <code class="highlighter-rouge">group</code> or <code class="highlighter-rouge">instanceId</code>
+            </li>
+          </ul>
+
+          <h3 id="get-examples">Examples</h3>
+
+          <p>
+            Get all records in the service:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                $> http -v :8080/
+                / HTTP/1.1
+                Accept: */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Host: localhost:8080
+                User-Agent: HTTPie/0.9.9
+
+
+                HTTP/1.1 200 OK
+                Content-Length: 397
+                content-type: application/json
+
+                {
+                    "popa": [
+                        {
+                            "created": "2017-07-23T03:41:51+03:00",
+                            "group": "popa",
+                            "id": "5973f0cfead3c64a00000001",
+                            "modified": "2017-07-23T03:41:51+03:00"
+                        },
+                        {
+                            "created": "2017-07-23T03:41:52+03:00",
+                            "group": "popa",
+                            "id": "5973f0d0ead3c64a00000002",
+                            "modified": "2017-07-23T03:41:52+03:00"
+                        }
+                    ],
+                    "zuul": [
+                        {
+                            "created": "2017-07-23T03:41:57+03:00",
+                            "group": "zuul",
+                            "id": "5973f0d5ead3c64a00000003",
+                            "modified": "2017-07-23T03:41:57+03:00"
+                        }
+                    ]
+                }
+              </code>
+            </pre>
+          </div>
+
+          <p>
+            Get all records by <code class="highlighter-rouge">group</code> name:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                $> http -v :8080/popa
+                GET /popa HTTP/1.1
+                Accept: */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Host: localhost:8080
+                User-Agent: HTTPie/0.9.9
+
+
+                HTTP/1.1 200 OK
+                Content-Length: 253
+                content-type: application/json
+
+                [
+                    {
+                        "created": "2017-07-23T03:41:51+03:00",
+                        "group": "popa",
+                        "id": "5973f0cfead3c64a00000001",
+                        "modified": "2017-07-23T03:41:51+03:00"
+                    },
+                    {
+                        "created": "2017-07-23T03:41:52+03:00",
+                        "group": "popa",
+                        "id": "5973f0d0ead3c64a00000002",
+                        "modified": "2017-07-23T03:41:52+03:00"
+                    }
+                ]
+              </code>
+            </pre>
+          </div>
+
+          <p>
+            Get record by its <code class="highlighter-rouge">group</code> and <code class="highlighter-rouge">instanceId</code>:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                $> http -v :8080/popa/5973f0cfead3c64a00000001
+                GET /popa/5973f0cfead3c64a00000001 HTTP/1.1
+                Accept: */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Host: localhost:8080
+                User-Agent: HTTPie/0.9.9
+
+
+                HTTP/1.1 200 OK
+                Content-Length: 125
+                content-type: application/json
+
+                {
+                    "created": "2017-07-23T03:41:51+03:00",
+                    "group": "popa",
+                    "id": "5973f0cfead3c64a00000001",
+                    "modified": "2017-07-23T03:41:51+03:00"
+                }
+              </code>
+            </pre>
+          </div>
+
+          <h2 id="put">Update service</h2>
+          <p>
+            This request, first of all, updates <code class="highlighter-rouge">modified</code> time field of the updating record.
+          </p>
+
+          <h3 id="put-request">Request</h3>
+          <p>
+            <strong>PUT</strong> [/pathPrefix]/{group}/{instanceId}
+          </p>
+          <ul>
+            <li>
+              <strong>pathPrefix</strong> - common path prefix, which was set (default value - /) at the start of Luntic program;
+            </li>
+            <li>
+              <strong>group</strong> - name of the registering application group;
+            </li>
+            <li>
+              <strong>instanceId</strong> - service instance id.
+            </li>
+          </ul>
+          <p>
+            Also, you could send a <code class="highlighter-rouge">JSON</code> object with a request. It will be attached to server generated instance in <code class="highlighter-rouge">meta</code> field.
+          </p>
+
+          <h3 id="put-response">Response</h3>
+          <p>
+            As a result of the request we get a response:
+          </p>
+
+          <ul>
+            <li>
+              <code class="highlighter-rouge">Code</code>: 200
+            </li>
+            <li>
+              <code class="highlighter-rouge">Content type</code>: application/json
+            </li>
+            <li>
+              <code class="highlighter-rouge">JSON fields:</code>
+              <table>
+                 <thead>
+                  <tr>
+                    <td><strong>Field</strong>&nbsp;&nbsp;&nbsp;</td>
+                    <td><strong>Optional</strong>&nbsp;&nbsp;&nbsp;</td>
+                    <td><strong>Description</strong></td>
+                  </tr>
+                 </thead>
+                <tr>
+                  <td><code class="highlighter-rouge">id</code></td>
+                  <td>no</td>
+                  <td>generated record id</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">group</code></td>
+                  <td>no</td>
+                  <td>the group name you set</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">created</code></td>
+                  <td>no</td>
+                  <td>the time you registered</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">modified</code></td>
+                  <td>no</td>
+                  <td>the time you last accessed the record</td>
+                </tr>
+                <tr>
+                  <td><code class="highlighter-rouge">meta</code></td>
+                  <td>yes</td>
+                  <td>if you send JSON in request, we get it back in that field</td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+
+          <h3 id="put-error">Error response</h3>
+          <ul>
+            <li>
+              <strong>400</strong> - if neither <code class="highlighter-rouge">group</code> nor <code class="highlighter-rouge">instanceId</code> are present;
+              <strong>404</strong> - in case of nonexistent <code class="highlighter-rouge">group</code> or <code class="highlighter-rouge">instanceId</code>
+            </li>
+          </ul>
+
+          <h3 id="put-examples">Examples</h3>
+          <p>
+            Regular <code class="highlighter-rouge">modified</code> time update:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                http -v PUT :8080/popa/5973f0cfead3c64a00000001
+                PUT /popa/5973f0cfead3c64a00000001 HTTP/1.1
+                Accept: */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Content-Length: 0
+                Host: localhost:8080
+                User-Agent: HTTPie/0.9.9
+
+
+                HTTP/1.1 200 OK
+                Content-Length: 125
+                content-type: application/json
+
+                {
+                    "created": "2017-07-23T03:41:51+03:00",
+                    "group": "popa",
+                    "id": "5973f0cfead3c64a00000001",
+                    "modified": "2017-07-23T03:46:22+03:00"
+                }
+              </code>
+            </pre>
+          </div>
+
+          <p>
+            Update with attaching new <code class="highlighter-rouge">meta</code> field value:
+          </p>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                http -v PUT :8080/popa/5973f0cfead3c64a00000001 name=Artem
+                PUT /popa/5973f0cfead3c64a00000001 HTTP/1.1
+                Accept: application/json, */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Content-Length: 17
+                Content-Type: application/json
+                Host: localhost:8080
+                User-Agent: HTTPie/0.9.9
+
+                {
+                    "name": "Artem"
+                }
+
+                HTTP/1.1 200 OK
+                Content-Length: 149
+                content-type: application/json
+
+                {
+                    "created": "2017-07-23T03:41:51+03:00",
+                    "group": "popa",
+                    "id": "5973f0cfead3c64a00000001",
+                    "meta": {
+                        "name": "Artem"
+                    },
+                    "modified": "2017-07-23T03:47:28+03:00"
+                }
+              </code>
+            </pre>
+          </div>
+
+          <h2 id="delete">Removes a service</h2>
+          <p>
+            Deletes the service from the services.
+          </p>
+
+          <h3 id="delete-request">Request</h3>
+          <p>
+            <strong>DELETE</strong> [/pathPrefix]/{group}/{instanceId}
+          </p>
+          <ul>
+            <li>
+              <strong>pathPrefix</strong> - common path prefix, which was set (default value - /) at the start of Luntic program;
+            </li>
+            <li>
+              <strong>group</strong> - name of the registering application group;
+            </li>
+            <li>
+              <strong>instanceId</strong> - service instance id.
+            </li>
+          </ul>
+
+          <h3 id="delete-response">Response</h3>
+          <p>
+            As a result of the request we get a response:
+          </p>
+          <ul>
+            <li>
+              <code class="highlighter-rouge">Code</code>: 204
+            </li>
+            <li>
+              <code class="highlighter-rouge">No Content</code>
+            </li>
+          </ul>
+
+          <h3 id="delete-error">Error response</h3>
+          <ul>
+            <li>
+              <strong>400</strong> - if neither <code class="highlighter-rouge">group</code> nor <code class="highlighter-rouge">instanceId</code> are present;
+              <strong>404</strong> - in case of nonexistent <code class="highlighter-rouge">group</code> or <code class="highlighter-rouge">instanceId</code>
+            </li>
+          </ul>
+
+          <h3 id="delete-examples">Examples</h3>
+          <div class="language-bash highlighter-rouge">
+            <pre class="highlight">
+              <code>
+                $> http -v DELETE :8080/popa/5972a20d5b31ed7400000001
+                DELETE /popa/5973e2c95d89804600000007 HTTP/1.1
+                Accept: */*
+                Accept-Encoding: gzip, deflate
+                Connection: keep-alive
+                Content-Length: 0
+                Host: localhost:8080
+
+
+                HTTP/1.1 204 No Content
+                Content-Length: 0
+              </code>
+            </pre>
+          </div>
+
+        </section>
+      </article>
+    </section>
+  </div>
+
+  <footer>
+    Copyright 2017 Artem Labazin /
+    <a href="https://github.com/xxlabaza">GitHub</a>
+  </footer>
+</body>
+</html>
