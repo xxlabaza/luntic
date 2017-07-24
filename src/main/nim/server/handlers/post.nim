@@ -40,5 +40,6 @@ proc handle* (rc: RequestContext, groups: TableRef[string, seq[Instance]]): Futu
 
   return rc.respond(201, instance.toJsonString(), [
     ("Location", location),
+    ("X-Expired-Time", $rc.heartbeat),
     ("Content-Type", "application/json")
   ])

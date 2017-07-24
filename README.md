@@ -28,7 +28,7 @@ $> luntic
 
 I was born!
 
-v1.0.0
+v1.0.1
 Copyright (c) by Artem Labazin
 
 REST requests are serviced on: http://localhost:8080/
@@ -48,8 +48,8 @@ $> luntic --debug --port=9999 --path-prefix=/register 0.0.0.0
 
 I was born!
 
-v1.0.0
-author: Artem Labazin
+v1.0.1
+Copyright (c) by Artem Labazin
 
 REST requests are serviced on: http://0.0.0.0:9999/register
 
@@ -72,7 +72,7 @@ $> luntic --dashboard:9876
 
 I was born!
 
-v1.0.0
+v1.0.1
 Copyright (c) by Artem Labazin
 
 REST requests are serviced on: http://localhost:8080/
@@ -138,6 +138,7 @@ HTTP/1.1 201 Created
 Content-Length: 124
 content-type: application/json
 location: /popa/597298af0937867200000001
+x-expired-time: 0
 
 {
     "created": "2017-07-22T03:13:35+03:00",
@@ -172,6 +173,7 @@ HTTP/1.1 201 Created
 Content-Length: 154
 content-type: application/json
 location: /popa/5972a20d5b31ed7400000001
+x-expired-time: 0
 
 {
     "created": "2017-07-22T03:53:33+03:00",
@@ -413,7 +415,11 @@ Creates new record.
 
   **Code:** 201
 
-  **Headers:** Location: [/pathPrefix]/{group}/{instanceId}
+  **Headers:**
+
+    * Location: [/pathPrefix]/{group}/{instanceId}
+
+    * X-Expired-Time: <int_seconds_or_zero_if_disabled>
 
   **Content type:** application/json
 
@@ -426,6 +432,8 @@ Creates new record.
   | **created**  | no       | the time you registered                                     |
   | **modified** | no       | the time you last accessed the record                       |
   | **meta**     | yes      | if you send `JSON` in request, we get it back in that field |
+
+  > **IMPORTANT:** Take a look at `X-Expired-Time` header - if it is not `0` value, your record expires after that amount of second. To prevent removing your instance record - make a `PUT` request within this timeout.
 
 * **Error Response:**
 
@@ -821,7 +829,7 @@ To check, what everything is fine, type the nex command:
 
 ```bash
 $> build/target/luntic -v
-v1.0.0
+v1.0.1
 ```
 
 ### Running the tests

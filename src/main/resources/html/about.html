@@ -109,7 +109,15 @@
               <code class="highlighter-rouge">Code</code>: 201
             </li>
             <li>
-              <code class="highlighter-rouge">Headers</code>: Location: [/pathPrefix]/{group}/{instanceId}
+              <code class="highlighter-rouge">Headers</code>:
+              <ul>
+                <li>
+                  Location: [/pathPrefix]/{group}/{instanceId}
+                </li>
+                <li>
+                  X-Expired-Time: {int_seconds_or_zero_if_disabled}
+                </li>
+              </ul>
             </li>
             <li>
               <code class="highlighter-rouge">Content type</code>: application/json

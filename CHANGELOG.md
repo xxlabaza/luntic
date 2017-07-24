@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+- Add `docker` build task, for creating a Docker image.
+
+## [1.0.1](https://github.com/xxlabaza/luntic/releases/tag/1.0.1) - 2017-07-24
+
+### Added
+- `X-Expired-Time` header in creation response, for telling in which time client should make `PUT` request again. If `--heartbeat` option is not set - this header will have `0` value.
+
+### Changed
+- Corrected README.md file
 
 ## [1.0.0](https://github.com/xxlabaza/luntic/releases/tag/1.0.0) - 2017-07-22
 

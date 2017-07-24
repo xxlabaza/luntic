@@ -30,6 +30,7 @@ type RequestContext* = object
   instanceId* : Option[string]
   body* : Option[JsonNode]
   request* : Request
+  heartbeat* : int
   time* : Time
 
 
@@ -69,7 +70,7 @@ proc parseBody* (request: Request): Option[JsonNode] =
   return some(json)
 
 
-proc initRequestContext* (pathPrefix: string, request: Request): RequestContext =
+proc initRequestContext* (pathPrefix: string, heartbeat: int, request: Request): RequestContext =
   let (group, instanceId) = parsePath(pathPrefix, request)
   result = RequestContext(
     pathPrefix: pathPrefix,
@@ -77,6 +78,7 @@ proc initRequestContext* (pathPrefix: string, request: Request): RequestContext 
     instanceId: instanceId,
     body: parseBody(request),
     request: request,
+    heartbeat: heartbeat,
     time: getTime()
   )
 

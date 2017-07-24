@@ -41,6 +41,7 @@ var
   groups {.threadvar.} : TableRef[string, seq[Instance]]
   pathPrefix {.threadvar.} : string
   debug {.threadvar.} : bool
+  heartbeat {.threadvar.} : int
 
 
 proc log (request: Request) =
@@ -60,7 +61,7 @@ proc restCallback (request: Request) {.async.} =
   if not request.url.path.startsWith(pathPrefix):
     await request.respond(Http400, "Only root path ($1) request allowed".format(pathPrefix))
   else:
-    let rc = initRequestContext(pathPrefix, request)
+    let rc = initRequestContext(pathPrefix, heartbeat, request)
     case request.reqMethod:
     of HttpPost:
       await post.handle(rc, groups)
@@ -130,6 +131,7 @@ proc start* (settings: Settings) =
   groups = newTable[string, seq[Instance]]()
   pathPrefix = settings.pathPrefix
   debug = settings.debug
+  heartbeat = settings.heartbeat
 
   let heartbeat = settings.heartbeat
   if heartbeat > 0:
