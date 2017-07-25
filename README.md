@@ -13,6 +13,25 @@ The service was inspired by [Eureka](https://github.com/Netflix/eureka) web serv
 
 It uses REST JSON-based API for simple integration.
 
+## Contents
+
+- [Getting Started](#getting-started)
+- [API](#api)
+  - [Registering new service](#registering-new-service)
+  - [Retrieve a service(s)](#retrieve-services)
+  - [Update service](#update-service)
+  - [Remove service](#remove-service)
+- [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Building](#building)
+  - [Running the tests](#running-the-tests)
+- [Built With](#built-with)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [Versioning](#versioning)
+- [Authors](#authors)
+- [License](#license)
+
 ## Getting Started
 
 Start the Luntic discovery server:
@@ -501,7 +520,7 @@ Creates new record.
 
   ```
 
-### Retrieve a service(s)
+### Retrieve services
 
 Returns all or specific records on the server.
 
@@ -746,7 +765,7 @@ This request, first of all, updates `modified` time field of the updating record
   }
   ```
 
-### Removes a service
+### Remove service
 
 Deletes the service from the services.
 
