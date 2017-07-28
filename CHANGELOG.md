@@ -10,7 +10,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-- Add `docker` build task, for creating a Docker image.
+- Restric access via `Basic Authorization`.
+
+## [1.1.0](https://github.com/xxlabaza/luntic/releases/tag/1.1.0) - 2017-07-29
+
+### Added
+- `Docker` build task, `Dockerfile` and possibility to create Docker images.
+- Headers print in `debug` mode.
+
+### Changed
+- Default listening address from `localhost` to `0.0.0.0`.
 
 ## [1.0.1](https://github.com/xxlabaza/luntic/releases/tag/1.0.1) - 2017-07-24
 

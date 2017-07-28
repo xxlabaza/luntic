@@ -16,6 +16,7 @@ It uses REST JSON-based API for simple integration.
 ## Contents
 
 - [Getting Started](#getting-started)
+- [Docker](#docker)
 - [API](#api)
   - [Registering new service](#registering-new-service)
   - [Retrieve a service(s)](#retrieve-services)
@@ -47,17 +48,17 @@ $> luntic
 
 I was born!
 
-v1.0.1
+v1.1.0
 Copyright (c) by Artem Labazin
 
-REST requests are serviced on: http://localhost:8080/
+REST requests are serviced on: http://0.0.0.0:8080/
 
 ```
 
 If you need to launch Luntic on different port, with specific path prefix, debug access logs or public net address, you are able to set it:
 
 ```bash
-$> luntic --debug --port=9999 --path-prefix=/register 0.0.0.0
+$> luntic --debug --port=9999 --path-prefix=/register localhost
 
     __                  __   _
    / /   __  __ ____   / /_ (_)_____
@@ -67,10 +68,10 @@ $> luntic --debug --port=9999 --path-prefix=/register 0.0.0.0
 
 I was born!
 
-v1.0.1
+v1.1.0
 Copyright (c) by Artem Labazin
 
-REST requests are serviced on: http://0.0.0.0:9999/register
+REST requests are serviced on: http://localhost:9999/register
 
 2017-07-22T03:20:45+03:00 -- POST   /register/popa
 2017-07-22T03:21:12+03:00 -- GET    /register
@@ -91,11 +92,11 @@ $> luntic --dashboard:9876
 
 I was born!
 
-v1.0.1
+v1.1.0
 Copyright (c) by Artem Labazin
 
-REST requests are serviced on: http://localhost:8080/
-Dashboard is available on: http://localhost:9876/
+REST requests are serviced on: http://0.0.0.0:8080/
+Dashboard is available on: http://0.0.0.0:9876/
 
 ```
 
@@ -404,6 +405,17 @@ User-Agent: HTTPie/0.9.9
 HTTP/1.1 204 No Content
 Content-Length: 0
 
+```
+
+## Docker
+
+You also are able to use already prepared [Docker image](https://hub.docker.com/r/xxlabaza/luntic/):
+
+```bash
+$> docker run \
+    -p 8080:8080 -p 9876:9876 \
+    xxlabaza/luntic:1.1.0 \
+    --debug --dashboard:9876
 ```
 
 ## API
@@ -848,7 +860,13 @@ To check, what everything is fine, type the nex command:
 
 ```bash
 $> build/target/luntic -v
-v1.0.1
+v1.1.0
+```
+
+To build a docker image:
+
+```bash
+$> nim docker
 ```
 
 ### Running the tests

@@ -52,6 +52,8 @@ proc log (request: Request) =
     echo "$1 -- $2 $3".format(getTime(), reqMethod, request.url.path)
   else:
     echo "$1 -- $2 $3  $4".format(getTime(), reqMethod, request.url.path, request.body)
+  for key, value in request.headers.table.pairs():
+    echo "  $1: $2".format(key, $value)
 
 
 proc restCallback (request: Request) {.async.} =
