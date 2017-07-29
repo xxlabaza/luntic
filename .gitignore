@@ -109,6 +109,5 @@ nb-configuration.xml
 .nb-gradle/
 
 # Test output log file
-*.txt*
 .DS_Store
 .vscode/
